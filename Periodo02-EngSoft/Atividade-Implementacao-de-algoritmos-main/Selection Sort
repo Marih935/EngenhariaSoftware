@@ -1,0 +1,41 @@
+#include <stdio.h>
+
+int FuncImprimirLista(int lista2[], int tamanho){
+    int i;
+    for(i=0; i < tamanho; i++){
+        printf("%d",lista2[i]);
+        if(i < tamanho - 1){
+            printf("%s",",");
+        }
+    }
+    printf("%s","\n");
+}
+
+
+int funcSlectionSort(int *lista, int tamanho){
+  int i, j, menorValor, troca;
+  //seleção menor valor
+  for(i=0; i < tamanho; i++){
+    menorValor = i;
+    for(j = i + 1; j < tamanho; j++){
+      if(lista[i] < lista[menorValor])
+        menorValor = j;
+    }
+    if(i != menorValor){
+      troca = lista[i];
+      lista[i] = lista[menorValor];
+      lista[menorValor] = troca;
+    }
+  }
+  FuncImprimirLista(lista, tamanho);
+}
+
+int main(void) {
+  int lista[] = {2,5,3,1,4};
+  int tamanhoLista = (int) sizeof(lista) / 4;
+  
+  printf("Lista Desordenada: ");
+  FuncImprimirLista(lista, tamanhoLista);
+
+  funcSlectionSort(lista, tamanhoLista);
+}

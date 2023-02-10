@@ -1,0 +1,140 @@
+#include <stdio.h>
+
+#define MAX 50
+
+//#define true 1
+//define false 0
+//typedef int bool;
+
+typedef enum {false, true} bool;
+
+typedef int TIPO_CHAVE;
+
+typedef struct{
+    TIPO_CHAVE chave;
+    //outros campos
+} REGISTRO;
+
+typedef struct {
+    REGISTRO a[MAX];
+    int nroElemen;
+} LISTA;
+
+void inicializa(LISTA* lista){
+    lista -> nroElemen = 0;
+}
+
+void reinicializa(LISTA* lista){
+    lista -> nroElemen = 0;
+}
+
+void imprimirLista(LISTA* lista){
+    printf("Lista: {\"");
+    int i = 0;
+    for (i=0; i < lista->nroElemen; i++){
+        printf("%i", lista->a[i].chave);
+    }
+    printf("\"}\n");
+}
+
+int procurarRegistro(LISTA* lista, TIPO_CHAVE chave){
+    int i = 0;
+    for (i = 0; i < lista->nroElemen; i++){
+        if(lista->a[i].chave == chave){
+            return 1;
+        }
+    }
+    return -1;
+}
+
+bool inserirNoFim(LISTA* lista, REGISTRO r){
+    if(lista->nroElemen == MAX) return false;
+    
+    int pos = procurarRegistro(lista, r.chave);
+    if(pos == -1){
+        lista->a[lista->nroElemen] = r;
+        lista->nroElemen++;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool inserirNaPosicao(LISTA* lista, REGISTRO r, int pos){
+    if(lista->nroElemen == MAX
+    || pos < 0
+    || pos > MAX
+    || pos > lista->nroElemen)
+    return false;
+    
+    int atualPos = procurarRegistro(lista, r.chave);
+    if(atualPos == -1){
+        int i;
+        for(i = lista->nroElemen; i > pos; i--){
+            lista->a[i] = lista->a[i-1];
+        }
+        lista->a[pos] = r;
+        lista->nroElemen++;
+    }
+}
+
+bool removerNaPosicao(LISTA* lista, int pos){
+    if(lista->nroElemen == 0
+    || pos < 0
+    || pos > MAX
+    || pos > lista->nroElemen)
+    return false;
+    
+    REGISTRO r = lista->a[pos];
+    int i;
+    for(i = lista->nroElemen; i > pos; i--){
+        lista->a[i-1] = lista->a[i];
+    }
+    lista->nroElemen--;
+    return true;
+}
+
+bool removerRegistro(LISTA* lista, REGISTRO r){
+    if(lista->nroElemen == 0)
+    return false;
+    
+    int atualPos = procurarRegistro(lista, r.chave);
+    printf("remove %d em %d\n", r.chave, atualPos);
+    if(atualPos != -1){
+        int i;
+        for(i = atualPos; i < lista->nroElemen; i ++){
+            lista->a[i] = lista->a[i + 1];
+        }
+        lista->nroElemen--;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+int main(){
+    LISTA lista;
+    inicializa(&lista);
+    int i;
+    REGISTRO a[10];
+    for(i=0; i<10; i++){
+        a[i].chave = i;
+    }
+    inserirNoFim(&lista, a[0]);
+    imprimirLista(&lista);
+    inserirNoFim(&lista, a[0]);
+    imprimirLista(&lista);
+    inserirNaPosicao(&lista, a[1], 0);
+    imprimirLista(&lista);
+    inserirNaPosicao(&lista, a[2], 0);
+    imprimirLista(&lista);
+    inserirNaPosicao(&lista, a[3], 2);
+    imprimirLista(&lista);
+    printf("Achou? %d em %d\n", 1, procurarRegistro(&lista, 1));
+    printf("Achou? %d em %d\n", 10, procurarRegistro(&lista, 10));
+    printf("Achou? %d em %d\n", 3, procurarRegistro(&lista, 3));
+    removerRegistro(&lista, a[5]);
+    imprimirLista(&lista);
+    removerRegistro(&lista, a[2]);
+    imprimirLista(&lista);
+}
